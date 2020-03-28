@@ -5,18 +5,22 @@
   
 
   
-  <title>设计模式-责任链模式 | Guang&#39;s tech blog</title>
+  <title>设计模式-责任链模式 | Guang&#39;s Tech Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="article">
+  <meta name="description" content="1. 责任链（Chain Of Responsibility）Intent使多个对象都有机会处理请求，从而避免请求的发送者和接收者之间的耦合关系。将这些对象连成一条链，并沿着这条链发送该请求，直到有一个对象处理它为止。 Class Diagram Handler：定义处理请求的接口，并且实现后继链（successor）Implementation1234567891011&#x2F;&#x2F; Handler.ja">
+<meta property="og:type" content="article">
 <meta property="og:title" content="设计模式-责任链模式">
 <meta property="og:url" content="http://yoursite.com/2020/03/28/design-pattern/index.html">
-<meta property="og:site_name" content="Guang&#39;s tech blog">
+<meta property="og:site_name" content="Guang&#39;s Tech Blog">
+<meta property="og:description" content="1. 责任链（Chain Of Responsibility）Intent使多个对象都有机会处理请求，从而避免请求的发送者和接收者之间的耦合关系。将这些对象连成一条链，并沿着这条链发送该请求，直到有一个对象处理它为止。 Class Diagram Handler：定义处理请求的接口，并且实现后继链（successor）Implementation1234567891011&#x2F;&#x2F; Handler.ja">
+<meta property="og:image" content="https://camo.githubusercontent.com/17e813bcfdb964585e9a3d16319b30b1f8d34959/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f63613966323362662d353561342d343762322d393533342d6132386533353339373938382e706e67">
 <meta property="article:published_time" content="2020-03-28T07:21:18.000Z">
-<meta property="article:modified_time" content="2020-03-28T07:22:36.513Z">
+<meta property="article:modified_time" content="2020-03-28T07:34:38.660Z">
 <meta property="article:author" content="Guang Hu">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://camo.githubusercontent.com/17e813bcfdb964585e9a3d16319b30b1f8d34959/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f63613966323362662d353561342d343762322d393533342d6132386533353339373938382e706e67">
   
-    <link rel="alternate" href="/atom.xml" title="Guang&#39;s tech blog" type="application/atom+xml">
+    <link rel="alternate" href="/atom.xml" title="Guang&#39;s Tech Blog" type="application/atom+xml">
   
   
     <link rel="icon" href="/favicon.png">
@@ -37,7 +41,7 @@
   <div id="header-outer" class="outer">
     <div id="header-title" class="inner">
       <h1 id="logo-wrap">
-        <a href="/" id="logo">Guang&#39;s tech blog</a>
+        <a href="/" id="logo">Guang&#39;s Tech Blog</a>
       </h1>
       
         <h2 id="subtitle-wrap">
@@ -89,7 +93,13 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h1 id="1-责任链（Chain-Of-Responsibility）"><a href="#1-责任链（Chain-Of-Responsibility）" class="headerlink" title="1. 责任链（Chain Of Responsibility）"></a>1. 责任链（Chain Of Responsibility）</h1><h2 id="Intent"><a href="#Intent" class="headerlink" title="Intent"></a>Intent</h2><p>使多个对象都有机会处理请求，从而避免请求的发送者和接收者之间的耦合关系。将这些对象连成一条链，并沿着这条链发送该请求，直到有一个对象处理它为止。</p>
+<h2 id="Class-Diagram"><a href="#Class-Diagram" class="headerlink" title="Class Diagram"></a>Class Diagram</h2><ul>
+<li>Handler：定义处理请求的接口，并且实现后继链（successor）<br><img src="https://camo.githubusercontent.com/17e813bcfdb964585e9a3d16319b30b1f8d34959/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f63613966323362662d353561342d343762322d393533342d6132386533353339373938382e706e67" alt="设计图" title="设计图"><h2 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation"></a>Implementation</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Handler.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Handler</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> Handler successor;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Handler</span><span class="params">(Handler successor)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.successor = successor;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">handleRequest</span><span class="params">(Request request)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ConcreteHandler1.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConcreteHandler1</span> <span class="keyword">extends</span> <span class="title">Handler</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ConcreteHandler1</span><span class="params">(Handler successor)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(successor);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">handleRequest</span><span class="params">(Request request)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (request.getType() == RequestType.TYPE1) &#123;</span><br><span class="line">            System.out.println(request.getName() + <span class="string">" is handle by ConcreteHandler1"</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (successor != <span class="keyword">null</span>) &#123;</span><br><span class="line">            successor.handleRequest(request);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
       
     </div>
     <footer class="article-footer">
@@ -100,16 +110,6 @@
   </div>
   
     
-<nav id="article-nav">
-  
-  
-    <a href="/2020/03/28/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Hello World</div>
-    </a>
-  
-</nav>
-
   
 </article>
 
@@ -143,10 +143,6 @@
         
           <li>
             <a href="/2020/03/28/design-pattern/">设计模式-责任链模式</a>
-          </li>
-        
-          <li>
-            <a href="/2020/03/28/hello-world/">Hello World</a>
           </li>
         
       </ul>
